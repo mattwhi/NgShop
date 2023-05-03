@@ -25,6 +25,7 @@ const errorHandler = require("./helpers/error-handler");
 app.use(express.json());
 app.use(morgon("tiny"));
 app.use(authJwt());
+app.use('/public/uploads', express.static(__dirname + 'public/uploads'))
 app.use(errorHandler);
 
 app.use(`${api}/products`, productsRouter);

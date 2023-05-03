@@ -58,18 +58,32 @@ router.get(`/:id`, async (req, res) => {
 });
 
 //Update product by ID
-router.put("/:id", async (req, res) => {
+router.put("/:id", uploadOptions.single("image"), async (req, res) => {
   if (!mongoose.isValidObjectId(req.params.id)) {
     res.status(400).send("invalid product");
   }
   const category = await Category.findById(req.body.category);
   if (!category) return res.status(400).send("invalid category");
 
-  const product = await Product.findByIdAndUpdate(
+  const product = await Product.findById(req.body.product);
+  if (!product) return res.status(400).send("invalid product");
+
+  const file = req.file;
+  let imagepath;
+
+  if(file) {
+    const fileName = req.file.filename;
+    const basePath = `${req.protocol}://${req.get("host")}/public/upload/`;
+    imagepath = `${basePath}${fileName}`
+  } else {
+    imagepath = product.image;
+  }
+
+  const updatedProduct = await Product.findByIdAndUpdate(
     req.params.id,
     {
       name: req.body.name,
-      image: req.body.image,
+      image: imagepath,
       brand: req.body.brand,
       price: req.body.price,
       rating: req.body.rating,
@@ -81,12 +95,12 @@ router.put("/:id", async (req, res) => {
     },
     { new: true }
   );
-  if (!product) {
+  if (!updatedProduct) {
     res
       .status(500)
       .json({ message: "the category with the given ID was not found" });
   }
-  res.status(200).send(product);
+  res.status(200).send(updatedProduct);
 });
 
 //Create new product
@@ -119,6 +133,33 @@ router.post(`/`, uploadOptions.single("image"), async (req, res) => {
 
   res.send(product);
 });
+
+//Update product by ID
+router.put(
+  "gallery-images:id",
+  uploadOptions.array("image", 10),
+  async (req, res) => {
+    if (!mongoose.isValidObjectId(req.params.id)) {
+      res.status(400).send("invalid product");
+    }
+    const files = req.files;
+    let imagePaths = [];
+    const basePath = `${req.protocol}://${req.get("host")}/public/upload/`;
+    if (files) {
+      files.map((file) => imagePaths.push(`${basePath}${file.fileName}`));
+    }
+    const product = await Product.findByIdAndUpdate(
+      req.params.id,
+      {
+        image: imagePaths,
+      },
+      { new: true }
+    );
+    if (!product) return res.status(500).send("The product cannot be created");
+
+    res.send(product);
+  }
+);
 
 //Delete Product
 router.delete("/:id", (req, res) => {
