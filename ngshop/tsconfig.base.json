@@ -1,0 +1,25 @@
+{
+    "compileOnSave": false,
+    "compilerOptions": {
+        "rootDir": ".",
+        "sourceMap": true,
+        "declaration": false,
+        "moduleResolution": "node",
+        "emitDecoratorMetadata": true,
+        "experimentalDecorators": true,
+        "importHelpers": true,
+        "target": "es2022",
+        "module": "esnext",
+        "lib": ["es2020", "dom"],
+        "skipLibCheck": true,
+        "skipDefaultLibCheck": true,
+        "baseUrl": ".",
+        "paths": {
+            "@ngshop/lib/orders": ["lib/orders/src/index.ts"],
+            "@ngshop/lib/products": ["lib/products/src/index.ts"],
+            "@ngshop/lib/ui": ["lib/ui/src/index.ts"],
+            "@ngshop/lib/users": ["lib/users/src/index.ts"]
+        }
+    },
+    "exclude": ["node_modules", "tmp"]
+}

@@ -1,0 +1,47 @@
+{
+    "name": "lib-ui",
+    "$schema": "../../node_modules/nx/schemas/project-schema.json",
+    "sourceRoot": "lib/ui/src",
+    "prefix": "ngshop",
+    "tags": [],
+    "projectType": "library",
+    "targets": {
+        "build": {
+            "executor": "@nx/angular:ng-packagr-lite",
+            "outputs": ["{workspaceRoot}/dist/{projectRoot}"],
+            "options": {
+                "project": "lib/ui/ng-package.json"
+            },
+            "configurations": {
+                "production": {
+                    "tsConfig": "lib/ui/tsconfig.lib.prod.json"
+                },
+                "development": {
+                    "tsConfig": "lib/ui/tsconfig.lib.json"
+                }
+            },
+            "defaultConfiguration": "production"
+        },
+        "test": {
+            "executor": "@nx/jest:jest",
+            "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+            "options": {
+                "jestConfig": "lib/ui/jest.config.ts",
+                "passWithNoTests": true
+            },
+            "configurations": {
+                "ci": {
+                    "ci": true,
+                    "codeCoverage": true
+                }
+            }
+        },
+        "lint": {
+            "executor": "@nx/linter:eslint",
+            "outputs": ["{options.outputFile}"],
+            "options": {
+                "lintFilePatterns": ["lib/ui/**/*.ts", "lib/ui/**/*.html"]
+            }
+        }
+    }
+}
